@@ -5,6 +5,7 @@ title: Introduction to Julia
 
 Basic Julia Syntax that we'll use:
 
+{% highlight julia %}
 ```Julia
 using Distributions
 using LinearAlgebra
@@ -45,3 +46,4 @@ opt = optimize(loglike,lower,upper,theta0)
 #one dimiension optimization no initial value    method:brent or goldsection
 MLE = opt.minimizer
 ```
+{% endhighlight %}
