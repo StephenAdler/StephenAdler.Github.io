@@ -1,0 +1,42 @@
+I"Ì<p>Basic Julia Syntax that weâ€™ll use:</p>
+
+<div class="language-julia highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">using</span> <span class="n">Distributions</span>
+<span class="k">using</span> <span class="n">LinearAlgebra</span>
+<span class="k">using</span> <span class="n">Optim</span>
+
+<span class="n">N</span><span class="o">=</span><span class="mi">100</span>
+<span class="n">K</span><span class="o">=</span><span class="mi">2</span>
+<span class="n">x</span><span class="o">=</span><span class="n">MvNormal</span><span class="x">(</span><span class="n">zeros</span><span class="x">(</span><span class="n">K</span><span class="x">),</span><span class="n">I</span><span class="x">)</span>  <span class="c">#define distribution type-multivariate normal</span>
+<span class="n">X</span><span class="o">=</span><span class="n">rand</span><span class="x">(</span><span class="n">x</span><span class="x">,</span><span class="n">N</span><span class="x">)</span>
+<span class="n">X</span><span class="o">=</span><span class="x">[</span><span class="n">ones</span><span class="x">(</span><span class="n">N</span><span class="x">)</span> <span class="n">X</span><span class="err">'</span><span class="x">]</span>
+<span class="n">epsilon</span><span class="o">=</span><span class="n">randn</span><span class="x">(</span><span class="n">N</span><span class="x">)</span>
+<span class="n">truebeta</span><span class="o">=</span><span class="x">[</span><span class="mf">0.2</span><span class="x">,</span><span class="mf">0.3</span><span class="x">,</span><span class="mf">0.4</span><span class="x">]</span>
+<span class="n">Y</span><span class="o">=</span><span class="n">X</span><span class="o">*</span><span class="n">truebeta</span><span class="o">+</span><span class="n">epsilon</span>
+
+<span class="cm">#=loglikelihood function
+l=sum log phi(y-x beta/sigma)=#</span>
+
+<span class="c">##define loglikehood function</span>
+<span class="k">function</span><span class="nf"> loglike</span><span class="x">(</span><span class="n">beta</span><span class="x">)</span>
+   <span class="n">r</span> <span class="o">=</span> <span class="n">Y</span> <span class="o">-</span> <span class="n">X</span> <span class="o">*</span> <span class="n">beta</span>
+   <span class="n">prob</span> <span class="o">=</span> <span class="n">logpdf</span><span class="o">.</span><span class="x">(</span><span class="n">Normal</span><span class="x">(</span><span class="mi">0</span><span class="x">,</span> <span class="mi">1</span><span class="x">),</span> <span class="n">r</span><span class="x">)</span>
+   <span class="c"># pdf(distribution,x) cdf, quantile,</span>
+   <span class="n">loglikelihood</span> <span class="o">=</span> <span class="o">-</span><span class="n">sum</span><span class="x">(</span><span class="n">prob</span><span class="x">)</span>    <span class="c">#remember to add negative sign</span>
+   <span class="k">return</span> <span class="n">loglikelihood</span>
+<span class="k">end</span>
+
+<span class="n">theta0</span><span class="o">=</span><span class="x">[</span><span class="mf">0.2</span><span class="x">,</span><span class="mf">0.2</span><span class="x">,</span><span class="mf">0.2</span><span class="x">]</span>  <span class="c">#intial value</span>
+
+<span class="n">opt</span><span class="o">=</span><span class="n">optimize</span><span class="x">(</span><span class="n">loglike</span><span class="x">,</span><span class="n">theta0</span><span class="x">)</span>
+<span class="c">#optimize(function,initial value, Newton() #method)</span>
+<span class="n">MLE</span><span class="o">=</span><span class="n">opt</span><span class="o">.</span><span class="n">minimizer</span>
+
+
+<span class="n">lower</span><span class="o">=</span><span class="x">[</span><span class="mf">0.0</span><span class="x">,</span><span class="mf">0.0</span><span class="x">,</span><span class="mf">0.0</span><span class="x">]</span>
+<span class="n">upper</span><span class="o">=</span><span class="x">[</span><span class="mf">1.0</span><span class="x">,</span><span class="mf">1.0</span><span class="x">,</span><span class="mf">1.0</span><span class="x">]</span>
+<span class="c">##Optimization with box constraint</span>
+<span class="n">opt</span> <span class="o">=</span> <span class="n">optimize</span><span class="x">(</span><span class="n">loglike</span><span class="x">,</span><span class="n">lower</span><span class="x">,</span><span class="n">upper</span><span class="x">,</span><span class="n">theta0</span><span class="x">)</span>
+<span class="c">#one dimiension optimization no initial value    method:brent or goldsection</span>
+<span class="n">MLE</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">minimizer</span>
+</code></pre></div></div>
+:ET
